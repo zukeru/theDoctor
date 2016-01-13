@@ -3,7 +3,7 @@ import os
 import time
 from subprocess import Popen, PIPE
 
-def shell_command_execute(command, logger):
+def shell_command_execute(command):
     p = Popen(command, stdout=PIPE, shell=True)
     (output, err) = p.communicate()
     return output
@@ -11,9 +11,18 @@ def shell_command_execute(command, logger):
 def update_repo():
     command = "cd %s; git fetch origin; git cherry master origin/master; " % os.getcwd()
     git_status = shell_command_execute(command)
-    if git_status == 'success':
+    if git_status:
+        command = "cd %s; git stash;" % os.getcwd()
+        shell_command_execute(command)
+        
+        command = "cd %s; git reset origin master;" % os.getcwd()
+        shell_command_execute(command)
+        
         command = "cd %s; git pull; " % os.getcwd()
         git_update = shell_command_execute(command)
+        
+        if "Updating" in str(git_update):
+            git_update = "success"
     return [git_status,git_update]
 
 def find_current_jobs():
@@ -86,7 +95,7 @@ def main():
             first = False
         else:
             status = update_repo() 
-            if status[0] == 'success':
+            if status[1] == 'success':
                 #check the repo files
                 find_current_jobs()
             
