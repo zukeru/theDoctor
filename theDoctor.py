@@ -11,6 +11,7 @@ def shell_command_execute(command):
 def update_repo():
     command = "cd %s; git fetch origin; git cherry master origin/master; " % os.getcwd()
     git_status = shell_command_execute(command)
+    
     if git_status:
         command = "cd %s; git stash;" % os.getcwd()
         shell_command_execute(command)
@@ -23,6 +24,10 @@ def update_repo():
         
         if "Updating" in str(git_update):
             git_update = "success"
+    
+    if not git_update:
+        git_update = 'None Needed'
+        
     return [git_status,git_update]
 
 def find_current_jobs():
