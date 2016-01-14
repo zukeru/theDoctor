@@ -65,16 +65,16 @@ def build_script_location(job_dict, job):
     
     if ".py" in job_dict[job]["filename"]:
         if job_dict[job]["cron_args"]:
-            insert_line = job_dict[job]['cron_timing'].strip() + " " + "python " + os.getcwd() + "/" + job_dict[job]["filename"] + " " + job_dict[job]["cron_args"]
+            insert_line = job_dict[job]['cron_timing'].strip() + " " + "python " + os.getcwd() + "/jobs/" + job_dict[job]["filename"] + " " + job_dict[job]["cron_args"]
         else:
-            insert_line = job_dict[job]['cron_timing'] + " " + "python " + os.getcwd() + "/" + job_dict[job]["filename"]
+            insert_line = job_dict[job]['cron_timing'] + " " + "python " + os.getcwd() + "/jobs/" + job_dict[job]["filename"]
         return insert_line
     
     if ".sh" in job_dict[job]['filename']:
         if job_dict[job]["cron_args"]:
-            insert_line = job_dict[job]['cron_timing'].strip() + " " + "python " + os.getcwd() + "/" + job_dict[job]["filename"] + " " + job_dict[job]["cron_args"]
+            insert_line = job_dict[job]['cron_timing'].strip() + " " + "python " + os.getcwd() + "/jobs/" + job_dict[job]["filename"] + " " + job_dict[job]["cron_args"]
         else:
-            insert_line = job_dict[job]['cron_timing'] + " " + "python " + os.getcwd() + "/" + job_dict[job]["filename"]
+            insert_line = job_dict[job]['cron_timing'] + " " + "python " + os.getcwd() + "/jobs/" + job_dict[job]["filename"]
         return insert_line
      
 def update_jobs(job_dict):
