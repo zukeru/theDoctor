@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<!-- xlsx.js (C) 2013-2015 SheetJS http://sheetjs.com -->
+<!-- vim: set ts=2: -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Active Directory User Manager</title>
+<style>
+#drop{
+	border:2px dashed #bbb;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	padding:25px;
+	text-align:center;
+	font:20pt bold,"Vollkorn";color:#bbb
+}
+#b64data{
+	width:100%;
+}
+</style>
+</head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>   
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw= sha512-nNo+yCHEyn0smMxSswnf/OnX6/KwJuZTlNZBjauKhTK0c+zT+q5JOCx0UFhXQ6rJR9jg6Es8gPuD2uZcYDLqSw==" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
+         
+<body>
+
+
+   
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">
+                    Active Directory User Manager
+                </a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#">Home</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+    
+    <div class="row" style="top:50px;">   
+    <br><br><br> 
+ 
+ 
+             <div class="alert alert-info">
+              <p id="alert"></p>
+            </div>   
+                  
+          <ul class="nav nav-tabs" id="myTabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Update User Password</a></li>
+            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Create User</a></li>
+            <li role="presentation"><a href="#bulkload" aria-controls="bulkload" role="tab" data-toggle="tab">Bulkload XLXS User Spreadsheet</a></li>
+
+          </ul>
+
+        <div class="tab-content">
+        
+            <div role="tabpanel" class="tab-pane active" id="home">
+                        <br>First Name<input type='text' class="form-control" id="firstnameUp" placeholder="first name">
+                        <br>Last Name<input type='text' class="form-control" id="lastnameUp" placeholder="last name">
+                        <br>Old Password<input class="form-control" type='password' id="passwordoldupdate" placeholder="old password">
+                        <br>New Password<input class="form-control" type='password' id="passwordnewupdate" placeholder="user password">
+                        <br><button onclick="updateUser();" class="btn btn-success">Change</button>
+            </div>
+            
+            <div role="tabpanel" class="tab-pane" id="profile">
+                        <br>First Name<input type='text' class="form-control" id="firstnameNew" placeholder="first name">
+                        <br>Last Name<input type='text' class="form-control" id="lastnameNew" placeholder="last name">
+                        <br>Email<input type='text' class="form-control" id="email" placeholder="email">
+                        <br>Password<input type='password' class="form-control" id="passwordnew" placeholder="password">
+                        <br><button onclick="createUser();" class="btn btn-success">Create</button>
+            </div>
+            
+            <div role="tabpanel" class="tab-pane" id="bulkload">
+
+				Output Format:
+				<select name="format">
+				<option value="json" selected > JSON</option>
+				<option value="csv"> CSV</option>
+				<option value="form"> FORMULAE</option>
+				</select><br />
+				<!--<input type="radio" name="format" value="csv" checked> CSV<br>
+				<input type="radio" name="format" value="json"> JSON<br>
+				<input type="radio" name="format" value="form"> FORMULAE<br> -->
+				
+				<div id="drop">Drop an XLSX / XLSM / XLSB / ODS / XLS / XML file here to see sheet data</div>
+				<p><input type="file" name="xlfile" id="xlf" /> ... or click here to select a file</p>
+				<textarea id="b64data">... or paste a base64-encoding here</textarea>
+				<input type="button" id="dotext" value="Click here to process the base64 text" onclick="b64it();"/><br />
+				Advanced Demo Options: <br />
+				Use Web Workers: (when available) <input type="checkbox" name="useworker" checked><br />
+				Use Transferrables: (when available) <input type="checkbox" name="xferable" checked><br />
+				Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" checked><br />
+				<pre id="out"></pre>
+				<br />
+				<!-- uncomment the next line here and in xlsxworker.js for encoding support -->
+				           
+
+
+            </div>            
+             
+        </div>
+    </div>
+
+
+<!--<script src="dist/cpexcel.js"></script>-->
+<script src="shim.js"></script>
+<script src="jszip.js"></script>
+<script src="xlsx.js"></script>
+<!-- uncomment the next line here and in xlsxworker.js for ODS support -->
+<script src="dist/ods.js"></script>
+<script>
+var X = XLSX;
+var XW = {
+	/* worker message */
+	msg: 'xlsx',
+	/* worker scripts */
+	rABS: './xlsxworker2.js',
+	norABS: './xlsxworker1.js',
+	noxfer: './xlsxworker.js'
+};
+
+var rABS = typeof FileReader !== "undefined" && typeof FileReader.prototype !== "undefined" && typeof FileReader.prototype.readAsBinaryString !== "undefined";
+if(!rABS) {
+	document.getElementsByName("userabs")[0].disabled = true;
+	document.getElementsByName("userabs")[0].checked = false;
+}
+
+var use_worker = typeof Worker !== 'undefined';
+if(!use_worker) {
+	document.getElementsByName("useworker")[0].disabled = true;
+	document.getElementsByName("useworker")[0].checked = false;
+}
+
+var transferable = use_worker;
+if(!transferable) {
+	document.getElementsByName("xferable")[0].disabled = true;
+	document.getElementsByName("xferable")[0].checked = false;
+}
+
+var wtf_mode = false;
+
+function fixdata(data) {
+	var o = "", l = 0, w = 10240;
+	for(; l<data.byteLength/w; ++l) o+=String.fromCharCode.apply(null,new Uint8Array(data.slice(l*w,l*w+w)));
+	o+=String.fromCharCode.apply(null, new Uint8Array(data.slice(l*w)));
+	return o;
+}
+
+function ab2str(data) {
+	var o = "", l = 0, w = 10240;
+	for(; l<data.byteLength/w; ++l) o+=String.fromCharCode.apply(null,new Uint16Array(data.slice(l*w,l*w+w)));
+	o+=String.fromCharCode.apply(null, new Uint16Array(data.slice(l*w)));
+	return o;
+}
+
+function s2ab(s) {
+	var b = new ArrayBuffer(s.length*2), v = new Uint16Array(b);
+	for (var i=0; i != s.length; ++i) v[i] = s.charCodeAt(i);
+	return [v, b];
+}
+
+function xw_noxfer(data, cb) {
+	var worker = new Worker(XW.noxfer);
+	worker.onmessage = function(e) {
+		switch(e.data.t) {
+			case 'ready': break;
+			case 'e': console.error(e.data.d); break;
+			case XW.msg: cb(JSON.parse(e.data.d)); break;
+		}
+	};
+	var arr = rABS ? data : btoa(fixdata(data));
+	worker.postMessage({d:arr,b:rABS});
+}
+
+function xw_xfer(data, cb) {
+	var worker = new Worker(rABS ? XW.rABS : XW.norABS);
+	worker.onmessage = function(e) {
+		switch(e.data.t) {
+			case 'ready': break;
+			case 'e': console.error(e.data.d); break;
+			default: xx=ab2str(e.data).replace(/\n/g,"\\n").replace(/\r/g,"\\r"); console.log("done"); cb(JSON.parse(xx)); break;
+		}
+	};
+	if(rABS) {
+		var val = s2ab(data);
+		worker.postMessage(val[1], [val[1]]);
+	} else {
+		worker.postMessage(data, [data]);
+	}
+}
+
+function xw(data, cb) {
+	transferable = document.getElementsByName("xferable")[0].checked;
+	if(transferable) xw_xfer(data, cb);
+	else xw_noxfer(data, cb);
+}
+
+function get_radio_value( radioName ) {
+	var radios = document.getElementsByName( radioName );
+	for( var i = 0; i < radios.length; i++ ) {
+		if( radios[i].checked || radios.length === 1 ) {
+			return radios[i].value;
+		}
+	}
+}
+
+function to_json(workbook) {
+	var result = {};
+	workbook.SheetNames.forEach(function(sheetName) {
+		var roa = X.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+		if(roa.length > 0){
+			result[sheetName] = roa;
+		}
+	});
+	return result;
+}
+
+function to_csv(workbook) {
+	var result = [];
+	workbook.SheetNames.forEach(function(sheetName) {
+		var csv = X.utils.sheet_to_csv(workbook.Sheets[sheetName]);
+		if(csv.length > 0){
+			result.push("SHEET: " + sheetName);
+			result.push("");
+			result.push(csv);
+		}
+	});
+	return result.join("\n");
+}
+
+function to_formulae(workbook) {
+	var result = [];
+	workbook.SheetNames.forEach(function(sheetName) {
+		var formulae = X.utils.get_formulae(workbook.Sheets[sheetName]);
+		if(formulae.length > 0){
+			result.push("SHEET: " + sheetName);
+			result.push("");
+			result.push(formulae.join("\n"));
+		}
+	});
+	return result.join("\n");
+}
+
+var tarea = document.getElementById('b64data');
+function b64it() {
+	if(typeof console !== 'undefined') console.log("onload", new Date());
+	var wb = X.read(tarea.value, {type: 'base64',WTF:wtf_mode});
+	process_wb(wb);
+}
+
+function process_wb(wb) {
+	var output = "";
+	switch(get_radio_value("format")) {
+		case "json":
+			console.log(wb);
+			output = JSON.stringify(to_json(wb), 2, 2);
+			break;
+		case "form":
+			output = to_formulae(wb);
+			break;
+		default:
+		output = to_csv(wb);
+	}
+	if(out.innerText === undefined) out.textContent = output;
+	else out.innerText = output;
+	if(typeof console !== 'undefined') console.log("output", new Date());
+}
+
+var drop = document.getElementById('drop');
+function handleDrop(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	rABS = document.getElementsByName("userabs")[0].checked;
+	use_worker = document.getElementsByName("useworker")[0].checked;
+	var files = e.dataTransfer.files;
+	var f = files[0];
+	{
+		var reader = new FileReader();
+		var name = f.name;
+		reader.onload = function(e) {
+			if(typeof console !== 'undefined') console.log("onload", new Date(), rABS, use_worker);
+			var data = e.target.result;
+			if(use_worker) {
+				xw(data, process_wb);
+			} else {
+				var wb;
+				if(rABS) {
+					wb = X.read(data, {type: 'binary'});
+				} else {
+				var arr = fixdata(data);
+					wb = X.read(btoa(arr), {type: 'base64'});
+				}
+				process_wb(wb);
+			}
+		};
+		if(rABS) reader.readAsBinaryString(f);
+		else reader.readAsArrayBuffer(f);
+	}
+}
+
+function handleDragover(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	e.dataTransfer.dropEffect = 'copy';
+}
+
+if(drop.addEventListener) {
+	drop.addEventListener('dragenter', handleDragover, false);
+	drop.addEventListener('dragover', handleDragover, false);
+	drop.addEventListener('drop', handleDrop, false);
+}
+
+
+var xlf = document.getElementById('xlf');
+function handleFile(e) {
+	rABS = document.getElementsByName("userabs")[0].checked;
+	use_worker = document.getElementsByName("useworker")[0].checked;
+	var files = e.target.files;
+	var f = files[0];
+	{
+		var reader = new FileReader();
+		var name = f.name;
+		reader.onload = function(e) {
+			if(typeof console !== 'undefined') console.log("onload", new Date(), rABS, use_worker);
+			var data = e.target.result;
+			if(use_worker) {
+				xw(data, process_wb);
+			} else {
+				var wb;
+				if(rABS) {
+					wb = X.read(data, {type: 'binary'});
+				} else {
+				var arr = fixdata(data);
+					wb = X.read(btoa(arr), {type: 'base64'});
+				}
+				process_wb(wb);
+			}
+		};
+		if(rABS) reader.readAsBinaryString(f);
+		else reader.readAsArrayBuffer(f);
+	}
+}
+
+if(xlf.addEventListener) xlf.addEventListener('change', handleFile, false);
+
+function updateUser()
+            {    
+                    var fname = document.getElementById("firstnameUp").value;
+                    var lname = document.getElementById("lastnameUp").value;
+                    var old_password = document.getElementById("passwordoldupdate").value;
+                    var new_password = document.getElementById("passwordnewupdate").value;
+                    var delete_url = "/update/" + 
+                    				 "firstName=" + fname + 
+                    				 "&lastName=" + lname + 
+                    				 "&old_password=" + old_password + 
+                    				 "&new_password=" + new_password +
+                    				 '"';
+                    
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open( "GET", delete_url, false ); // false for synchronous request
+                    xmlHttp.send( null );
+                    
+
+                    document.getElementById("alert").innerHTML = xmlHttp.responseText.toString();
+                    return xmlHttp.responseText;
+                    window.location.reload();
+            }  
+
+                function createUser()
+            {    
+                    var fname = document.getElementById("firstnameNew").value;
+                    var lname = document.getElementById("lastnameNew").value;
+                    var email = document.getElementById("email").value;
+                    var new_password = document.getElementById("passwordnew").value;
+                    
+                    var delete_url = "/newuser/" + 
+                    				 "firstName=" + fname + 
+                    				 "&lastName=" + lname + 
+                    				 "&email=" + email +
+                    				 "&password=" + new_password +
+                    				 '"';
+                    
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open( "GET", delete_url, false ); // false for synchronous request
+                    xmlHttp.send( null );
+                    
+                    document.getElementById("alert").innerHTML = xmlHttp.responseText.toString();
+                    return xmlHttp.responseText;
+					
+                    //window.location.reload();
+                    
+                    
+            } 
+            
+
+                      
+</script>
+ 
+</body>
+</html>
